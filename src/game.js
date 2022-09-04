@@ -58,45 +58,46 @@ function Square(props) {
 }
 
 export class Board extends React.Component {
-    constructor(props) {
-        // ES6 class：构造函数中要先调用super()，执行父类的构造函数。因此在React组件中，构造函数必须以super()开头
-        super(props);
-        this.state = {
-            squares: Array(9).fill(null),
-            xIsNext: true, // 棋子每移动一步，值就会反转
-        };
-    }
+    // 变量提升至Game组件，
+    // constructor(props) {
+    //     // ES6 class：构造函数中要先调用super()，执行父类的构造函数。因此在React组件中，构造函数必须以super()开头
+    //     super(props);
+    //     this.state = {
+    //         squares: Array(9).fill(null),
+    //         xIsNext: true, // 棋子每移动一步，值就会反转
+    //     };
+    // }
 
-    handleClick(i) {
-        // 为什么要创建一个squares的副本？
-        const squares = this.state.squares.slice();
-        if (caculateWinner(squares) || squares[i]) {
-            return;
-        }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            squares,
-            xIsNext: !this.state.xIsNext,
-        });
-    }
+    // handleClick(i) {
+    //     // 为什么要创建一个squares的副本？
+    //     const squares = this.state.squares.slice();
+    //     if (caculateWinner(squares) || squares[i]) {
+    //         return;
+    //     }
+    //     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    //     this.setState({
+    //         squares,
+    //         xIsNext: !this.state.xIsNext,
+    //     });
+    // }
 
     renderSquare(i) {
-        return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />;
+        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
     }
 
     render() {
-        const winner = caculateWinner(this.state.squares);
-        let status;
+        // const winner = caculateWinner(this.state.squares);
+        // let status;
 
-        if (winner) {
-            status = `Winner: ${winner}`;
-        } else {
-            status = `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
-        }
+        // if (winner) {
+        //     status = `Winner: ${winner}`;
+        // } else {
+        //     status = `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
+        // }
 
         return (
             <div>
-                <div className="status">{status}</div>
+                {/* <div className="status">{status}</div> */}
                 <div className="board-row">
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
@@ -117,16 +118,83 @@ export class Board extends React.Component {
     }
 }
 
+// 完成 ”时间旅行“ 功能：将变量 history 提升至Game顶层组件中
 export class Game extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            history: [
+                {
+                    squares: Array(9).fill(null),
+                },
+            ],
+            xIsNext: true,
+            stepNumber: 0,
+        };
+    }
+    handleClick(i) {
+        // 为什么要创建一个squares的副本？
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        // 取最新的一份squares（即最后一份）
+        const current = history[history.length - 1];
+        const squares = current.squares.slice();
+        // 判断一下：若当前格子已经用过，或者已经有一方胜利，就直接return
+        if (caculateWinner(squares) || squares[i]) {
+            return;
+        }
+        // 判断当前格子要渲染 X 还是 O？
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            // 推荐使用concat，该方法不会改变原数组
+            history: history.concat([
+                {
+                    squares: squares,
+                },
+            ]),
+            xIsNext: !this.state.xIsNext,
+            stepNumber: history.length,
+        });
+    }
+
+    jumoTo(step) {
+        this.setState({
+            stepNumber: step,
+            xIsNext: step % 2 === 0,
+        });
+    }
+
     render() {
+        const history = this.state.history;
+        // 根据当前的 stepNumber 渲染，而不是最后一次
+        const current = history[this.state.stepNumber];
+        const winner = caculateWinner(current.squares);
+
+        // map(item, index)
+        const moves = history.map((step, move) => {
+            const desc = move ? `Go to move #${move}` : `Go to game start`;
+            return (
+                // 注意key的使用，与Vue中的
+                <li key={move}>
+                    <button onClick={() => this.jumoTo(move)}>{desc}</button>
+                </li>
+            );
+        });
+
+        let status;
+        if (winner) {
+            status = `Winner: ${winner}`;
+        } else {
+            status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+        }
+
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board></Board>
+                    <Board squares={current.squares} onClick={i => this.handleClick(i)}></Board>
                 </div>
                 <div className="game-info">
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
+                    <div>{status}</div>
+                    <ol>{moves}</ol>
                 </div>
             </div>
         );
