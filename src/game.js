@@ -126,6 +126,7 @@ export class Game extends React.Component {
             history: [
                 {
                     squares: Array(9).fill(null),
+                    currentPoint: [null, null], // 记录此时点击的坐标（列号、行号）
                 },
             ],
             xIsNext: true,
@@ -138,6 +139,10 @@ export class Game extends React.Component {
         // 取最新的一份squares（即最后一份）
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        // 计算当前点击的坐标
+        const currentX = Math.floor(i / 3);
+        const currentY = i % 3;
+        const currentPoint = [currentX + 1, currentY + 1];
         // 判断一下：若当前格子已经用过，或者已经有一方胜利，就直接return
         if (caculateWinner(squares) || squares[i]) {
             return;
@@ -149,6 +154,7 @@ export class Game extends React.Component {
             history: history.concat([
                 {
                     squares: squares,
+                    currentPoint,
                 },
             ]),
             xIsNext: !this.state.xIsNext,
@@ -168,14 +174,15 @@ export class Game extends React.Component {
         // 根据当前的 stepNumber 渲染，而不是最后一次
         const current = history[this.state.stepNumber];
         const winner = caculateWinner(current.squares);
-
         // map(item, index)
         const moves = history.map((step, move) => {
             const desc = move ? `Go to move #${move}` : `Go to game start`;
+            const point = step.currentPoint;
             return (
                 // 注意key的使用，与Vue中的
                 <li key={move}>
                     <button onClick={() => this.jumoTo(move)}>{desc}</button>
+                    <span>{move ? `坐标：${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}` : ''}</span>
                 </li>
             );
         });
