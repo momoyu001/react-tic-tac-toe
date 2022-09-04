@@ -33,6 +33,7 @@ ul {
   margin-bottom: 10px;
 }
 
+
 .square {
   background: #fff;
   border: 1px solid #999;
@@ -59,6 +60,7 @@ ul {
 .game {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .game-info {
