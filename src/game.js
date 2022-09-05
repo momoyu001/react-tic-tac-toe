@@ -131,6 +131,7 @@ export class Game extends React.Component {
             ],
             xIsNext: true,
             stepNumber: 0,
+            activeHistory: null,
         };
     }
     handleClick(i) {
@@ -162,10 +163,11 @@ export class Game extends React.Component {
         });
     }
 
-    jumoTo(step) {
+    jumoTo(step, move) {
         this.setState({
-            stepNumber: step,
+            stepNumber: move,
             xIsNext: step % 2 === 0,
+            activeHistory: move + 1,
         });
     }
 
@@ -180,8 +182,8 @@ export class Game extends React.Component {
             const point = step.currentPoint;
             return (
                 // 注意key的使用，与Vue中的
-                <li key={move}>
-                    <button onClick={() => this.jumoTo(move)}>{desc}</button>
+                <li key={move} className={this.state.activeHistory && this.state.activeHistory === move + 1 ? 'active-item' : ''}>
+                    <button onClick={() => this.jumoTo(step, move)}>{desc}</button>
                     <span>{move ? `坐标：${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}` : ''}</span>
                 </li>
             );

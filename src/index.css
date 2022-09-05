@@ -66,3 +66,7 @@ ul {
 .game-info {
   margin-left: 20px;
 }
+
+.active-item {
+  border: 2px solid #000000;
+}
