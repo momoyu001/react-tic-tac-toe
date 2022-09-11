@@ -148,11 +148,13 @@ export class Game extends React.Component {
                 {
                     squares: Array(9).fill(null),
                     currentPoint: [null, null], // 记录此时点击的坐标（列号、行号）
+                    index: 0,
                 },
             ],
             xIsNext: true,
             stepNumber: 0,
             activeHistory: null,
+            increase: true, // 是否升序（升序-默认）
         };
     }
     handleClick(i) {
@@ -177,6 +179,7 @@ export class Game extends React.Component {
                 {
                     squares: squares,
                     currentPoint,
+                    index: history.length + 1,
                 },
             ]),
             xIsNext: !this.state.xIsNext,
@@ -186,29 +189,54 @@ export class Game extends React.Component {
 
     jumoTo(step, move) {
         this.setState({
-            stepNumber: move,
+            stepNumber: this.state.increase ? move : this.state.history.length - 1 - move,
             xIsNext: step % 2 === 0,
-            activeHistory: move + 1,
+            activeHistory: step.index,
         });
+    }
+
+    // 升序降序
+    sortTo(increase = true) {
+        this.setState({
+            increase,
+        });
+    }
+
+    renderHistory() {
+        let history = this.state.history;
+        history = this.state.increase ? history : history.reverse();
+        // map(item, index)
+        const moves = history.map((step, move) => {
+            const point = step.currentPoint;
+            let desc;
+            let pointText = '';
+            if (this.state.increase) {
+                // 默认升序的场景
+                desc = move ? `Go to move #${step.index}` : `Go to game start`;
+                pointText = move ? '坐标' : '';
+            } else {
+                desc = move === history.length - 1 ? `Go to game start` : `Go to move #${step.index}`;
+                pointText = move === history.length - 1 ? '' : '坐标';
+            }
+            return (
+                // 注意key的使用，与Vue中的
+                <li key={step.index} className={this.state.activeHistory === step.index ? 'active-item' : ''}>
+                    <button onClick={() => this.jumoTo(step, move)}>{desc}</button>
+                    <span>{`${pointText}${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}`}</span>
+                </li>
+            );
+        });
+
+        return moves;
     }
 
     render() {
         const history = this.state.history;
         // 根据当前的 stepNumber 渲染，而不是最后一次
         const current = history[this.state.stepNumber];
-        const winner = caculateWinner(current.squares);
         // map(item, index)
-        const moves = history.map((step, move) => {
-            const desc = move ? `Go to move #${move}` : `Go to game start`;
-            const point = step.currentPoint;
-            return (
-                // 注意key的使用，与Vue中的
-                <li key={move} className={this.state.activeHistory && this.state.activeHistory === move + 1 ? 'active-item' : ''}>
-                    <button onClick={() => this.jumoTo(step, move)}>{desc}</button>
-                    <span>{move ? `坐标：${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}` : ''}</span>
-                </li>
-            );
-        });
+        const moves = this.renderHistory();
+        const winner = caculateWinner(current.squares);
 
         let status;
         if (winner) {
@@ -224,6 +252,10 @@ export class Game extends React.Component {
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
+                    <div>
+                        <button onClick={() => this.sortTo(true)}>升序</button>
+                        <button onClick={() => this.sortTo(false)}>降序</button>
+                    </div>
                     <ol>{moves}</ol>
                 </div>
             </div>
