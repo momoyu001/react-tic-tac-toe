@@ -95,10 +95,30 @@ export class Board extends React.Component {
         //     status = `Next Player: ${this.state.xIsNext ? 'X' : 'O'}`;
         // }
 
+        // 循环方式渲染棋盘
+        const arr = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+        ];
+
+        const boardHtml = arr.map((item, index) => {
+            const rowHtml = item.map((subItem, subIndex) => {
+                return <span key={`${subItem}-${subIndex}`}>{this.renderSquare(subItem)}</span>;
+            });
+
+            return (
+                <div key={index} className="board-row">
+                    {rowHtml}
+                </div>
+            );
+        });
+
         return (
             <div>
                 {/* <div className="status">{status}</div> */}
-                <div className="board-row">
+
+                {/* <div className="board-row">
                     {this.renderSquare(0)}
                     {this.renderSquare(1)}
                     {this.renderSquare(2)}
@@ -112,7 +132,8 @@ export class Board extends React.Component {
                     {this.renderSquare(6)}
                     {this.renderSquare(7)}
                     {this.renderSquare(8)}
-                </div>
+                </div> */}
+                {boardHtml}
             </div>
         );
     }
