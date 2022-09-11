@@ -53,6 +53,10 @@ ul {
   outline: none;
 }
 
+.active-square {
+  background-color: #ff0000;
+}
+
 .kbd-navigation .square:focus {
   background: #ddd;
 }

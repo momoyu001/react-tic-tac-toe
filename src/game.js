@@ -51,7 +51,7 @@ import React from 'react';
 function Square(props) {
     return (
         // 改写成函数组件之后，onClick 的写法于类组件也不同了
-        <button className="square" onClick={props.onClick}>
+        <button className={props.activeSquare ? 'square active-square' : 'square'} onClick={props.onClick}>
             {props.value}
         </button>
     );
@@ -82,7 +82,13 @@ export class Board extends React.Component {
     // }
 
     renderSquare(i) {
-        return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
+        return (
+            <Square
+                value={this.props.squares[i]}
+                activeSquare={this.props.activeLine.includes(i)}
+                onClick={() => this.props.onClick(i)}
+            />
+        );
     }
 
     render() {
@@ -155,6 +161,7 @@ export class Game extends React.Component {
             stepNumber: 0,
             activeHistory: null,
             increase: true, // 是否升序（升序-默认）
+            activeLine: [], // 赢家的路径
         };
     }
     handleClick(i) {
@@ -167,8 +174,16 @@ export class Game extends React.Component {
         const currentX = Math.floor(i / 3);
         const currentY = i % 3;
         const currentPoint = [currentX + 1, currentY + 1];
+        const cacuRet = caculateWinner(squares);
+        console.log('计算结果。。。', cacuRet);
         // 判断一下：若当前格子已经用过，或者已经有一方胜利，就直接return
-        if (caculateWinner(squares) || squares[i]) {
+        if (cacuRet || squares[i]) {
+            if (cacuRet) {
+                const activeLine = cacuRet[0];
+                this.setState({
+                    activeLine,
+                });
+            }
             return;
         }
         // 判断当前格子要渲染 X 还是 O？
@@ -236,10 +251,13 @@ export class Game extends React.Component {
         const current = history[this.state.stepNumber];
         // map(item, index)
         const moves = this.renderHistory();
-        const winner = caculateWinner(current.squares);
-
+        const ret = caculateWinner(current.squares);
+        let activeLine;
+        console.log(ret);
         let status;
-        if (winner) {
+        if (ret) {
+            const winner = ret[1];
+            activeLine = ret[0];
             status = `Winner: ${winner}`;
         } else {
             status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
@@ -248,7 +266,11 @@ export class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={i => this.handleClick(i)}></Board>
+                    <Board
+                        squares={current.squares}
+                        activeLine={activeLine ? activeLine : []}
+                        onClick={i => this.handleClick(i)}
+                    ></Board>
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
@@ -279,7 +301,7 @@ function caculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return [lines[i], squares[a]];
         }
     }
 
