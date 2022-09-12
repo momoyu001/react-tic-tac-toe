@@ -5,35 +5,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-}
-
-body {
   font: 14px 'Century Gothic', Futura, sans-serif;
   margin: 20px;
   padding: 20px;
 }
 
-ol,
-ul {
-  padding-left: 30px;
-}
-
-.board-row:after {
-  clear: both;
-  content: '';
-  display: table;
-}
-
-.status {
-  margin-bottom: 10px;
-}
-
-
+/* 棋盘格子样式 */
 .square {
   background: #fff;
   border: 1px solid #999;
@@ -49,18 +26,11 @@ ul {
   width: 34px;
 }
 
-.square:focus {
-  outline: none;
-}
-
 .active-square {
   background-color: #ff0000;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
+/* Game组件样式 */
 .game {
   display: flex;
   flex-direction: row;
@@ -71,6 +41,6 @@ ul {
   margin-left: 20px;
 }
 
-.active-item {
+.game-active-item {
   border: 2px solid #000000;
 }

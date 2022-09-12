@@ -234,7 +234,7 @@ export class Game extends React.Component {
             }
             return (
                 // 注意key的使用，与Vue中的
-                <li key={step.index} className={this.state.activeHistory === step.index ? 'active-item' : ''}>
+                <li key={step.index} className={this.state.activeHistory === step.index ? 'game-active-item' : ''}>
                     <button onClick={() => this.jumoTo(step, move)}>{desc}</button>
                     <span>{`${pointText}${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}`}</span>
                 </li>
