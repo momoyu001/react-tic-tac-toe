@@ -175,7 +175,6 @@ export class Game extends React.Component {
         const currentY = i % 3;
         const currentPoint = [currentX + 1, currentY + 1];
         const cacuRet = caculateWinner(squares);
-        console.log('计算结果。。。', cacuRet);
         // 判断一下：若当前格子已经用过，或者已经有一方胜利，就直接return
         if (cacuRet || squares[i]) {
             if (cacuRet) {
@@ -247,20 +246,25 @@ export class Game extends React.Component {
 
     render() {
         const history = this.state.history;
+        const historyLen = this.state.history.length;
         // 根据当前的 stepNumber 渲染，而不是最后一次
         const current = history[this.state.stepNumber];
         // map(item, index)
         const moves = this.renderHistory();
         const ret = caculateWinner(current.squares);
         let activeLine;
-        console.log(ret);
         let status;
         if (ret) {
             const winner = ret[1];
             activeLine = ret[0];
             status = `Winner: ${winner}`;
         } else {
-            status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+            if (historyLen === 10 && current.index === 10) {
+                // 无人获胜
+                status = `平局，无人获胜~`;
+            } else {
+                status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+            }
         }
 
         return (
