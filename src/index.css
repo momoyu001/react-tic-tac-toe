@@ -10,7 +10,7 @@ body {
   padding: 20px;
 }
 
-/* 棋盘格子样式 */
+/* 单个棋盘格子样式 */
 .square {
   background: #fff;
   border: 1px solid #999;
@@ -18,29 +18,114 @@ body {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
+  height: 60px;
+  width: 60px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
 }
 
 .active-square {
-  background-color: #ff0000;
+  background-color: #1b63d7;
+  color: #fff;
+}
+
+/* 棋盘格子样式 */
+.board-module {
+  width: 180px;
 }
 
 /* Game组件样式 */
-.game {
+.game-title {
+  text-align: center;
+  height: 60px;
+  line-height: 60px;
+  font-size: 28px;
+  font-weight: 600;
+  box-shadow: 3px 3px 5px #d3d3d3;
+  margin-bottom: 20px;
+  border: .5px solid #707573;
+}
+
+.game-content {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  align-items: center;
+}
+
+.game-board {
+  width: 190px;
+  text-align: center;
 }
 
 .game-info {
+  width: 250px;
   margin-left: 20px;
 }
 
+.game-info {
+  font-size: 20px;
+  font-weight: 500;
+  color: #160202;
+}
+
+.game-button-box {
+  width: 160px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+}
+
+.game-button {
+  width: 60px;
+  height: 28px;
+  background-color: #fff;
+  border: 1px solid #707573;
+  color: #160202;
+  border-radius: 4px;
+  line-height: 28px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.game-button:hover {
+  background-color: #0a61f7;
+  color: #fff;
+  cursor: pointer;
+}
+
+.game-history {
+  height: 220px;
+}
+
+.game-li {
+  display: flex;
+  align-items: center;
+  margin: 4px;
+}
+
+.game-li-button {
+  width: 180px;
+  height: 28px;
+  line-height: 28px;
+  padding: 0 4px;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #707573;
+  color: #160202;
+}
+
+.game-li-button:hover {
+  background-color: #0a61f7;
+  color: #fff;
+  cursor: pointer;
+}
+
 .game-active-item {
-  border: 2px solid #000000;
+  border: 2px solid #0a61f7;
 }

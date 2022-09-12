@@ -32,6 +32,6 @@ export class Board extends React.Component {
             );
         });
 
-        return <div>{boardHtml}</div>;
+        return <div className="board-module">{boardHtml}</div>;
     }
 }

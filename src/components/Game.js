@@ -89,10 +89,14 @@ export class Game extends React.Component {
             }
             return (
                 // 注意key的使用，与Vue中的
-                <li key={step.index} className={this.state.activeHistory === step.index ? 'game-active-item' : ''}>
-                    <button onClick={() => this.jumoTo(step, move)}>{desc}</button>
-                    <span>{`${pointText}${point[0] ? point[0] : ''},${point[1] ? point[1] : ''}`}</span>
-                </li>
+                <div key={step.index} className="game-li">
+                    <div
+                        className={this.state.activeHistory === step.index ? 'game-active-item game-li-button' : 'game-li-button'}
+                        onClick={() => this.jumoTo(step, move)}
+                    >
+                        {`${desc}\t\t${pointText}${point[0] ? point[0] + ',' : ''}${point[1] ? point[1] : ''}`}
+                    </div>
+                </div>
             );
         });
 
@@ -123,21 +127,28 @@ export class Game extends React.Component {
         }
 
         return (
-            <div className="game">
-                <div className="game-board">
-                    <Board
-                        squares={current.squares}
-                        activeLine={activeLine ? activeLine : []}
-                        onClick={i => this.handleClick(i)}
-                    ></Board>
-                </div>
-                <div className="game-info">
-                    <div>{status}</div>
-                    <div>
-                        <button onClick={() => this.sortTo(true)}>升序</button>
-                        <button onClick={() => this.sortTo(false)}>降序</button>
+            <div className="game-module">
+                <div className="game-title">~~React-tic-tac-toe~~</div>
+                <div className="game-content">
+                    <div className="game-board">
+                        <Board
+                            squares={current.squares}
+                            activeLine={activeLine ? activeLine : []}
+                            onClick={i => this.handleClick(i)}
+                        ></Board>
                     </div>
-                    <ol>{moves}</ol>
+                    <div className="game-info">
+                        <div className="game-status">{status}</div>
+                        <div className="game-button-box">
+                            <div className="game-button" onClick={() => this.sortTo(true)}>
+                                升序
+                            </div>
+                            <div className="game-button" onClick={() => this.sortTo(false)}>
+                                降序
+                            </div>
+                        </div>
+                        <div className="game-history">{moves}</div>
+                    </div>
                 </div>
             </div>
         );
